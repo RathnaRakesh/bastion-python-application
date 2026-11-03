@@ -127,3 +127,5 @@ jobs:
             echo "Flask deployed successfully on Private EC2"
 
           REMOTE
+
+          # python application
