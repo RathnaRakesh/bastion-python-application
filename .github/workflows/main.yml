@@ -1,4 +1,6 @@
-name: Deploy Flask Application to Private EC2
+# name: Deploy Flask Application to Private EC2
+
+
 
 on:
   push:
@@ -17,15 +19,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      
       - name: Configure SSH
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 --decode > ~/.ssh/id_rsa
+
           chmod 600 ~/.ssh/id_rsa
+
+          ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null
+
+          echo "SSH private key loaded successfully!"
 
       - name: Configure Bastion and Private EC2
         env:
